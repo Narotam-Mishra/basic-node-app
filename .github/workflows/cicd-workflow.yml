@@ -19,12 +19,12 @@ jobs:
 
     deploy:
       needs: build
-      runs-on: node-app-ec2
+      runs-on: [node-app-ec2]
       steps:
         - name: Pull image from docker hub
           run: docker pull dockernaru99/basic-node-app:latest
         - name: Delete old container
           run: docker rm -f basic-node-app-container
         - name: Run docker container
-          run: docker run -d -p 6543:6543 -name basic-node-app-container dockernaru99/basic-node-app
+          run: docker run -d -p 6543:6543 --name basic-node-app-container dockernaru99/basic-node-app
 
