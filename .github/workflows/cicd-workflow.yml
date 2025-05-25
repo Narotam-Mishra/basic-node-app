@@ -1,0 +1,30 @@
+name: node_with_cicd_ec2
+
+on:
+   push:
+    branches: [main]
+
+jobs:
+    build:
+        runs-on: [ubuntu-latest]
+        steps:
+            - name: Checkout source
+              uses: actions/checkout@v3
+            - name: Login to docker hub
+              run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            - name: Build docker image
+              run: docker build -t dockernaru99/basic-node-app .
+            - name: Publish image to docker hub
+              run: docker push dockernaru99/basic-node-app:latest
+
+    deploy:
+      needs: build
+      runs-on: [nodejs-aws-ec2]
+      steps:
+        - name: Pull image from docker hub
+          run: docker pull dockernaru99/basic-node-app:latest
+        - name: Delete old container
+          run: docker rm -f basic-node-app-container
+        - name: Run docker container
+          run: docker run -d -p 6543:6543 -name basic-node-app-container dockernaru99/basic-node-app
+
