@@ -19,7 +19,7 @@ jobs:
 
     deploy:
       needs: build
-      runs-on: [node-app-ec2]
+      runs-on: node-app-ec2
       steps:
         - name: Pull image from docker hub
           run: docker pull dockernaru99/basic-node-app:latest
